@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)file:///c%3A/Users/User/Downloads/remixed-61cdd9df.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Replex — DTP Document Translation Skill</title>
+<link href="./Replex — DTP Document Translation Skill_files/css2" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0e0c0a;
+    --parchment: #f5f0e8;
+    --gold: #c9a84c;
+    --gold-light: #e8d08a;
+    --rust: #8b3a2a;
+    --sage: #4a6741;
+    --muted: #7a7060;
+    --border: rgba(201,168,76,0.3);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--parchment);
+    font-family: 'Cormorant Garamond', serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 6rem 2rem;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 20%, rgba(201,168,76,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 80% 80%, rgba(139,58,42,0.06) 0%, transparent 60%);
+  }
+
+  /* Decorative corner ornaments */
+  .ornament {
+    position: absolute;
+    width: 160px; height: 160px;
+    border: 1px solid var(--border);
+    opacity: 0.6;
+  }
+  .ornament--tl { top: 3rem; left: 3rem; border-right: none; border-bottom: none; }
+  .ornament--tr { top: 3rem; right: 3rem; border-left: none; border-bottom: none; }
+  .ornament--bl { bottom: 3rem; left: 3rem; border-right: none; border-top: none; }
+  .ornament--br { bottom: 3rem; right: 3rem; border-left: none; border-top: none; }
+  .ornament::after {
+    content: '';
+    position: absolute;
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0.8;
+  }
+  .ornament--tl::after { top: -1px; left: -1px; }
+  .ornament--tr::after { top: -1px; right: -1px; }
+  .ornament--bl::after { bottom: -1px; left: -1px; }
+  .ornament--br::after { bottom: -1px; right: -1px; }
+
+  .hero-content {
+    position: relative; z-index: 1;
+    text-align: center;
+    max-width: 900px;
+  }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(5rem, 14vw, 11rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--parchment);
+    margin-bottom: 0.5rem;
+    animation: fadeUp 0.9s 0.1s ease both;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    font-weight: 300;
+    color: rgba(245,240,232,0.6);
+    letter-spacing: 0.05em;
+    margin-top: 1.5rem;
+    margin-bottom: 3rem;
+    animation: fadeUp 1s 0.2s ease both;
+  }
+
+  .hero-rule {
+    width: 120px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 3rem;
+    animation: expand 1s 0.4s ease both;
+  }
+
+  .hero-desc {
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    line-height: 1.8;
+    color: rgba(245,240,232,0.7);
+    max-width: 640px;
+    margin: 0 auto 3.5rem;
+    animation: fadeUp 1s 0.3s ease both;
+  }
+
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    padding: 1rem 2.5rem;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.35s ease;
+    animation: fadeUp 1s 0.5s ease both;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--gold);
+    transform: translateX(-101%);
+    transition: transform 0.35s ease;
+    z-index: 0;
+  }
+  .hero-cta:hover::before { transform: translateX(0); }
+  .hero-cta:hover { color: var(--ink); }
+  .hero-cta span { position: relative; z-index: 1; }
+
+  /* ── PHASES ── */
+  .phases {
+    position: relative; z-index: 1;
+    padding: 8rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: var(--parchment);
+  }
+
+  .section-intro {
+    text-align: center;
+    font-size: 1.15rem;
+    color: rgba(245,240,232,0.55);
+    max-width: 520px;
+    margin: 0 auto 5rem;
+    line-height: 1.75;
+  }
+
+  .phases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .phase-card {
+    background: var(--ink);
+    padding: 3rem 2.5rem;
+    position: relative;
+    transition: background 0.3s ease;
+  }
+  .phase-card:hover { background: rgba(201,168,76,0.04); }
+
+  .phase-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    font-weight: 900;
+    color: rgba(201,168,76,0.08);
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  .phase-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--parchment);
+  }
+
+  .phase-desc {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: rgba(245,240,232,0.55);
+  }
+
+  .phase-tag {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--border);
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  /* ── LANGUAGES ── */
+  .languages {
+    position: relative; z-index: 1;
+    padding: 8rem 2rem;
+    background: rgba(201,168,76,0.03);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .lang-inner { max-width: 1100px; margin: 0 auto; }
+
+  .lang-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 4rem;
+  }
+
+  .lang-pill {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.6rem 1.2rem;
+    border: 1px solid rgba(201,168,76,0.2);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: rgba(245,240,232,0.6);
+    transition: all 0.25s ease;
+  }
+  .lang-pill:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.05);
+  }
+
+  .lang-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+
+  /* ── FEATURES ── */
+  .features {
+    position: relative; z-index: 1;
+    padding: 8rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .features-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 3rem;
+    margin-top: 5rem;
+  }
+
+  .feature {
+    display: flex; gap: 1.5rem;
+  }
+
+  .feature-icon {
+    flex-shrink: 0;
+    width: 48px; height: 48px;
+    border: 1px solid var(--border);
+    display: grid; place-items: center;
+    font-size: 1.2rem;
+    color: var(--gold);
+  }
+
+  .feature-body h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+  }
+
+  .feature-body p {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: rgba(245,240,232,0.55);
+  }
+
+  /* ── WORKFLOW ── */
+  .workflow {
+    position: relative; z-index: 1;
+    padding: 8rem 2rem;
+    border-top: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .workflow-inner { max-width: 900px; margin: 0 auto; }
+
+  .workflow-steps {
+    margin-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .workflow-step {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 2rem;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    position: relative;
+    transition: background 0.3s;
+  }
+
+  .workflow-step:hover { background: rgba(201,168,76,0.02); }
+
+  .step-index {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    font-style: italic;
+    color: rgba(201,168,76,0.15);
+    line-height: 1;
+    padding-top: 0.2rem;
+    text-align: right;
+    padding-right: 1.5rem;
+    border-right: 1px solid var(--border);
+  }
+
+  .step-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: var(--parchment);
+  }
+
+  .step-content p {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: rgba(245,240,232,0.55);
+  }
+
+  .step-mono {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+    opacity: 0.7;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1;
+    padding: 4rem 2rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    font-style: italic;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+  }
+
+  .footer-tagline {
+    font-size: 0.85rem;
+    color: rgba(245,240,232,0.3);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex; align-items: center; justify-content: center; gap: 1.5rem;
+    margin: 0 auto;
+    max-width: 400px;
+    padding: 3rem 0;
+  }
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+  .divider-diamond {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    opacity: 0.6;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes expand {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  /* Scroll-based reveal */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 640px) {
+    .ornament { width: 80px; height: 80px; top: 1.5rem !important; left: 1.5rem !important; right: 1.5rem !important; bottom: 1.5rem !important; }
+    .workflow-step { grid-template-columns: 50px 1fr; gap: 1rem; }
+    .step-index { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ─────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="ornament ornament--tl"></div>
+  <div class="ornament ornament--tr"></div>
+  <div class="ornament ornament--bl"></div>
+  <div class="ornament ornament--br"></div>
+
+  <div class="hero-content">
+    <p class="eyebrow">Claude · Document Intelligence Skill</p>
+    <h1 class="hero-title">R<em>e</em>plex</h1>
+    <div class="hero-rule"></div>
+    <p class="hero-subtitle">DTP Reconstruction &amp; Language Translation</p>
+    <p class="hero-desc">
+      Upload any document — certificate, contract, form, or official paper —
+      and Replex faithfully rebuilds its structure as a Word file, then translates
+      every word into the language of your choice.
+    </p>
+
+  </div>
+</section>
+
+<!-- ── VIDEO INTRO ───────────────────────────── -->
+<section style="position:relative; z-index:1; padding:0 2rem 6rem; display:flex; flex-direction:column; align-items:center; gap:1.5rem;">
+  <p style="font-family:&#39;DM Mono&#39;, monospace; font-size:0.65rem; letter-spacing:0.4em; color:var(--gold); text-transform:uppercase;">
+    Watch the Intro
+  </p>
+  <div style="width:100%; max-width:860px; aspect-ratio:16/9; border:1px solid var(--border); overflow:hidden; box-shadow:0 0 60px rgba(201,168,76,0.08);">
+    <iframe width="100%" height="500" src="./Replex — DTP Document Translation Skill_files/dch9GjKTwLg.html" title="Replex Introduction" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen="">
+</iframe>
+  </div>
+</section>
+
+<!-- ── PHASES ────────────────────────────────── -->
+<section class="phases" id="how-it-works">
+  <p class="section-label reveal visible">The Four Phases</p>
+  <h2 class="section-title reveal visible">Precision at Every Stage</h2>
+  <p class="section-intro reveal visible">Cipher operates through a rigorous four-phase pipeline, ensuring structural integrity and linguistic accuracy from source to output.</p>
+
+  <div class="phases-grid">
+    <div class="phase-card reveal visible" style="transition-delay: 0ms;">
+      <div class="phase-num">01</div>
+      <h3 class="phase-title">Document Analysis</h3>
+      <p class="phase-desc">Replex silently audits your uploaded document — extracting page dimensions, typography, layout columns, table structures, form fields, and every typographic nuance.</p>
+      <span class="phase-tag">DTP Audit</span>
+    </div>
+    <div class="phase-card reveal visible" style="transition-delay: 80ms;">
+      <div class="phase-num">02</div>
+      <h3 class="phase-title">Layout Reconstruction</h3>
+      <p class="phase-desc">Using docx-js, Replex rebuilds the document skeleton with pixel-faithful fidelity — nested tables, borders, margins, cell padding, and heading hierarchies all preserved.</p>
+      <span class="phase-tag">Structural Replica</span>
+    </div>
+    <div class="phase-card reveal visible" style="transition-delay: 160ms;">
+      <div class="phase-num">03</div>
+      <h3 class="phase-title">Translation</h3>
+      <p class="phase-desc">All visible text is translated with natural fluency into your target language — proper accents, formal registers, locale-specific number formatting — while preserving codes, URLs, and brand names.</p>
+      <span class="phase-tag">Linguistic Accuracy</span>
+    </div>
+    <div class="phase-card reveal visible" style="transition-delay: 240ms;">
+      <div class="phase-num">04</div>
+      <h3 class="phase-title">.docx Delivery</h3>
+      <p class="phase-desc">The translated content is assembled into the DTP skeleton and validated. You receive a named, download-ready Word file — one per language if multiple are requested.</p>
+      <span class="phase-tag">Word Output</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── DIVIDER ───────────────────────────────── -->
+<div class="divider">
+  <div class="divider-line"></div>
+  <div class="divider-diamond"></div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- ── LANGUAGES ─────────────────────────────── -->
+<section class="languages">
+  <div class="lang-inner">
+    <p class="section-label reveal visible">Language Support</p>
+    <h2 class="section-title reveal visible">Any Language, Any Script</h2>
+    <p class="section-intro reveal visible">Cipher supports professional translation into every major world language, with dedicated rules for regional standards, punctuation, and formality.</p>
+
+    <div class="lang-grid">
+      <div class="lang-pill reveal visible" style="transition-delay: 0ms;"><span class="lang-dot"></span> French · fr</div>
+      <div class="lang-pill reveal visible" style="transition-delay: 80ms;"><span class="lang-dot"></span> German · de</div>
+      <div class="lang-pill reveal visible" style="transition-delay: 160ms;"><span class="lang-dot"></span> Spanish · es</div>
+      <div class="lang-pill reveal visible" style="transition-delay: 240ms;"><span class="lang-dot"></span> Arabic · ar</div>
+      <div class="lang-pill reveal visible" style="transition-delay: 0ms;"><span class="lang-dot"></span> Chinese Simplified · zh</div>
+      <div class="lang-pill reveal visible" style="transition-delay: 80ms;"><span class="lang-dot"></span> Korean · ko</div>
+      <div class="lang-pill reveal visible" style="transition-delay: 160ms;"><span class="lang-dot"></span> Portuguese · pt</div>
+      <div class="lang-pill reveal visible" style="transition-delay: 240ms;"><span class="lang-dot"></span> Japanese · ja</div>
+      <div class="lang-pill reveal visible" style="transition-delay: 0ms;"><span class="lang-dot"></span> Italian · it</div>
+      <div class="lang-pill reveal visible" style="transition-delay: 80ms;"><span class="lang-dot"></span> Dutch · nl</div>
+      <div class="lang-pill reveal visible" style="transition-delay: 160ms;"><span class="lang-dot"></span> Russian · ru</div>
+      <div class="lang-pill reveal visible" style="transition-delay: 240ms;"><span class="lang-dot"></span> Polish · pl</div>
+      <div class="lang-pill reveal visible" style="transition-delay: 0ms;"><span class="lang-dot"></span> Turkish · tr</div>
+      <div class="lang-pill reveal visible" style="transition-delay: 80ms;"><span class="lang-dot"></span> Swedish · sv</div>
+      <div class="lang-pill reveal visible" style="transition-delay: 160ms;"><span class="lang-dot"></span> + Many More</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ───────────────────────────────── -->
+<section class="features">
+  <p class="section-label reveal visible">What Sets Cipher Apart</p>
+  <h2 class="section-title reveal visible">Built for Professional Documents</h2>
+
+  <div class="features-list">
+    <div class="feature reveal visible" style="transition-delay: 240ms;">
+      <div class="feature-icon">⊞</div>
+      <div class="feature-body">
+        <h3>Nested Table Architecture</h3>
+        <p>Government forms, certificates, and contracts are reconstructed using nested tables — preserving every printed line, border weight, and cell padding.</p>
+      </div>
+    </div>
+    <div class="feature reveal visible" style="transition-delay: 0ms;">
+      <div class="feature-icon">◈</div>
+      <div class="feature-body">
+        <h3>Multi-Language Batch Output</h3>
+        <p>Request translations into multiple languages at once. Replex produces one validated .docx per language, each named with the appropriate locale code.</p>
+      </div>
+    </div>
+    <div class="feature reveal visible" style="transition-delay: 80ms;">
+      <div class="feature-icon">⌇</div>
+      <div class="feature-body">
+        <h3>Formal Register Awareness</h3>
+        <p>Each language receives culturally appropriate formality — formal <em>vous</em> in French, <em>Sie</em> in German, <em>합니다</em> style in Korean.</p>
+      </div>
+    </div>
+    <div class="feature reveal visible" style="transition-delay: 160ms;">
+      <div class="feature-icon">◻</div>
+      <div class="feature-body">
+        <h3>Transparent Approximations</h3>
+        <p>Embedded seals, handwritten signatures, and non-extractable graphics are flagged clearly so you know exactly what was approximated.</p>
+      </div>
+    </div>
+    <div class="feature reveal visible" style="transition-delay: 240ms;">
+      <div class="feature-icon">∷</div>
+      <div class="feature-body">
+        <h3>Structural Integrity Validation</h3>
+        <p>Every output passes automated validation before delivery — ensuring the .docx opens correctly and all structural elements are intact.</p>
+      </div>
+    </div>
+    <div class="feature reveal visible" style="transition-delay: 0ms;">
+      <div class="feature-icon">⊕</div>
+      <div class="feature-body">
+        <h3>Smart Preservation Rules</h3>
+        <p>Numerical values, URLs, brand names, and technical terms are preserved unchanged, while all human-readable text is fully translated.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WORKFLOW ───────────────────────────────── -->
+<section class="workflow">
+  <div class="workflow-inner">
+    <p class="section-label reveal visible">How to Use Cipher</p>
+    <h2 class="section-title reveal visible">Simple. Precise. Immediate.</h2>
+
+    <div class="workflow-steps">
+      <div class="workflow-step reveal visible" style="transition-delay: 80ms;">
+        <div class="step-index">1</div>
+        <div class="step-content">
+          <p class="step-mono">Trigger</p>
+          <h3>Upload Your Document</h3>
+          <p>Attach a PDF, image, or scanned file directly in the Claude chat. Works with certificates, contracts, government forms, letters, reports — any document type.</p>
+        </div>
+      </div>
+      <div class="workflow-step reveal visible" style="transition-delay: 160ms;">
+        <div class="step-index">2</div>
+        <div class="step-content">
+          <p class="step-mono">Instruction</p>
+          <h3>State Your Target Language</h3>
+          <p>Simply say "translate this to French" or "convert and translate into Spanish." Replex detects the instruction and activates automatically.</p>
+        </div>
+      </div>
+      <div class="workflow-step reveal visible" style="transition-delay: 240ms;">
+        <div class="step-index">3</div>
+        <div class="step-content">
+          <p class="step-mono">Processing</p>
+          <h3>Cipher Works Its Pipeline</h3>
+          <p>Document analysis → layout reconstruction → translation → validation. The entire four-phase process runs seamlessly without requiring any input from you.</p>
+        </div>
+      </div>
+      <div class="workflow-step reveal visible" style="transition-delay: 0ms;">
+        <div class="step-index">4</div>
+        <div class="step-content">
+          <p class="step-mono">Delivery</p>
+          <h3>Download Your .docx</h3>
+          <p>Receive a fully formatted, translated Word document ready for immediate use — with a brief flag list noting any elements that could not be reproduced.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ───────────────────────────────────── -->
+<section style="position:relative;z-index:1;padding:8rem 2rem;text-align:center;border-top:1px solid var(--border);overflow:hidden;">
+  <!-- Glow -->
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(201,168,76,0.07) 0%,transparent 70%);pointer-events:none;"></div>
+
+  <div style="position:relative;max-width:720px;margin:0 auto;">
+    <p style="font-family:&#39;DM Mono&#39;,monospace;font-size:0.65rem;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:1.5rem;" class="reveal visible">Early Access</p>
+
+    <h2 style="font-family:&#39;Playfair Display&#39;,serif;font-size:clamp(2.8rem,6vw,5rem);font-weight:900;line-height:1;margin-bottom:1.5rem;color:var(--parchment);" class="reveal visible">
+      Ready to <em style="font-style:italic;color:var(--gold);">Transform</em><br>Your Documents?
+    </h2>
+
+    <p style="font-size:1.1rem;line-height:1.8;color:rgba(245,240,232,0.55);max-width:520px;margin:0 auto 3rem;" class="reveal visible">
+      Replex is currently available by request. Join the growing list of professionals using AI-powered DTP reconstruction and translation — and get access today.
+    </p>
+
+    <!-- CTA button -->
+    <div style="display:flex;justify-content:center;margin-bottom:3rem;" class="reveal visible">
+      <a href="mailto:hello@replex.ai" style="display:inline-flex;align-items:center;gap:0.75rem;padding:1.1rem 2.8rem;background:var(--gold);color:var(--ink);font-family:&#39;DM Mono&#39;,monospace;font-size:0.78rem;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;font-weight:500;transition:opacity 0.25s ease;" onmouseover="this.style.opacity=&#39;0.85&#39;" onmouseout="this.style.opacity=&#39;1&#39;">
+        <span>Request Access</span>
+        <span>→</span>
+      </a>
+    </div>
+
+    <!-- Social proof -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap;" class="reveal visible">
+      <div style="display:flex;align-items:center;gap:0.6rem;">
+        <span style="color:var(--gold);font-size:0.9rem;">✦</span>
+        <span style="font-family:&#39;DM Mono&#39;,monospace;font-size:0.65rem;letter-spacing:0.15em;color:rgba(245,240,232,0.35);text-transform:uppercase;">No credit card required</span>
+      </div>
+      <div style="width:1px;height:16px;background:var(--border);"></div>
+      <div style="display:flex;align-items:center;gap:0.6rem;">
+        <span style="color:var(--gold);font-size:0.9rem;">✦</span>
+        <span style="font-family:&#39;DM Mono&#39;,monospace;font-size:0.65rem;letter-spacing:0.15em;color:rgba(245,240,232,0.35);text-transform:uppercase;">Response within 24 hours</span>
+      </div>
+      <div style="width:1px;height:16px;background:var(--border);"></div>
+      <div style="display:flex;align-items:center;gap:0.6rem;">
+        <span style="color:var(--gold);font-size:0.9rem;">✦</span>
+        <span style="font-family:&#39;DM Mono&#39;,monospace;font-size:0.65rem;letter-spacing:0.15em;color:rgba(245,240,232,0.35);text-transform:uppercase;">Free trial included</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────── -->
+<footer>
+  <div class="footer-logo">Replex</div>
+  <p class="footer-tagline">A Claude Document Intelligence Skill · DTP · Translation · .docx</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Stagger grid children
+  document.querySelectorAll('.phases-grid .phase-card, .lang-grid .lang-pill, .features-list .feature, .workflow-steps .workflow-step').forEach((el, i) => {
+    el.style.transitionDelay = `${(i % 4) * 80}ms`;
+  });
+</script>
+
+
+</body></html>
