@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Replex DTP — Reconstruct &amp; Translate</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center;
+    background: #0e0c0a; color: #f5f0e8;
+    font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+    padding: 2rem;
+  }
+  .card {
+    width: 100%; max-width: 480px;
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 2.5rem;
+  }
+  h1 { font-size: 1.5rem; margin: 0 0 0.25rem; }
+  p.sub { color: rgba(245,240,232,0.55); margin: 0 0 2rem; font-size: 0.9rem; }
+  label { display: block; font-size: 0.8rem; letter-spacing: 0.05em; margin-bottom: 0.4rem; color: #c9a84c; }
+  input[type=file], input[type=text], select {
+    width: 100%; padding: 0.6rem; margin-bottom: 1.25rem;
+    background: transparent; border: 1px solid rgba(201,168,76,0.3); color: inherit;
+  }
+  button {
+    width: 100%; padding: 0.8rem; background: #c9a84c; color: #0e0c0a;
+    border: none; font-weight: 600; letter-spacing: 0.05em; cursor: pointer;
+  }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  #status { margin-top: 1rem; font-size: 0.85rem; color: rgba(245,240,232,0.7); min-height: 1.2em; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Replex DTP</h1>
+    <p class="sub">Local OCR + offline translation + .docx reconstruction. No cloud AI API.</p>
+
+    <form id="convert-form">
+      <label for="file">Document (PDF, PNG, JPG)</label>
+      <input type="file" id="file" name="file" accept=".pdf,.png,.jpg,.jpeg" required>
+
+      <label for="source_lang">Source language code</label>
+      <input type="text" id="source_lang" name="source_lang" value="en" required>
+
+      <label for="target_langs">Target language codes (comma-separated)</label>
+      <input type="text" id="target_langs" name="target_langs" value="fr" placeholder="fr,de,es" required>
+
+      <button type="submit" id="submit-btn">Convert &amp; Translate</button>
+    </form>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    // Point this at your deployed backend (e.g. a Hugging Face Space URL).
+    const API_BASE = window.REPLEX_API_BASE || "http://localhost:7860";
+
+    const form = document.getElementById("convert-form");
+    const statusEl = document.getElementById("status");
+    const submitBtn = document.getElementById("submit-btn");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      submitBtn.disabled = true;
+      statusEl.textContent = "Processing — this can take a while on the free tier…";
+
+      const formData = new FormData();
+      formData.append("file", document.getElementById("file").files[0]);
+      formData.append("source_lang", document.getElementById("source_lang").value.trim());
+      formData.append("target_langs", document.getElementById("target_langs").value.trim());
+
+      try {
+        const response = await fetch(`${API_BASE}/convert`, { method: "POST", body: formData });
+        if (!response.ok) {
+          const detail = await response.json().catch(() => ({}));
+          throw new Error(detail.detail || `Request failed (${response.status})`);
+        }
+        const blob = await response.blob();
+        const disposition = response.headers.get("Content-Disposition") || "";
+        const match = disposition.match(/filename="?([^"]+)"?/);
+        const filename = match ? match[1] : "replex-output";
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(url);
+        statusEl.textContent = "Done — download started.";
+      } catch (err) {
+        statusEl.textContent = `Error: ${err.message}`;
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
